@@ -46,31 +46,37 @@ public class UserDaoHibernateImpl implements UserDao {
             tx.commit();
             System.out.println("Таблица удалена");
         } catch (HibernateException e) {
-            e.printStackTrace();
             if (tx != null) {
                 tx.rollback();
+                throw new DaoException(e);
             }
         }
     }
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
+        Transaction tx = null;
         try (Session session = getSessionFactory().openSession()) {
-            Transaction tx1 = session.beginTransaction();
+            tx = session.beginTransaction();
             session.save(new User(name, lastName, age));
-            tx1.commit();
+            tx.commit();
         } catch (Exception e) {
+            if (tx != null) tx.rollback();
             throw new DaoException(e);
         }
     }
 
     @Override
     public void removeUserById(long id) {
-        Session session = getSessionFactory().openSession();
-        Transaction tx1 = session.beginTransaction();
-        session.delete(session.get(User.class, id));
-        tx1.commit();
-        session.close();
+        Transaction tx = null;
+        try (Session session = getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            session.delete(session.get(User.class, id));
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            throw new DaoException(e);
+        }
     }
 
     @Override
@@ -81,19 +87,17 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void cleanUsersTable() {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        try {
+        Transaction tx = null;
+        try (Session session = sessionFactory.openSession();) {
+            tx = session.beginTransaction();
             session.createNativeQuery("TRUNCATE TABLE user;").executeUpdate();
-            transaction.commit();
+            tx.commit();
             System.out.println("Таблица очищена");
         } catch (HibernateException e) {
-            e.printStackTrace();
-            if (transaction != null) {
-                transaction.rollback();
+            if (tx != null) {
+                tx.rollback();
             }
-        } finally {
-            session.close();
+            throw new DaoException(e);
         }
     }
 }
