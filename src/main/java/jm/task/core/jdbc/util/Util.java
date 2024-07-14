@@ -12,7 +12,7 @@ import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
 
 public class Util {
-    private static final String URL = "jdbc:mysql://localhost:3306";
+    private static final String URL = "jdbc:mysql://localhost:3306/user";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "root";
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
@@ -40,7 +40,8 @@ public class Util {
                 props.put(Environment.PASS, PASSWORD);
                 props.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
                 props.put(Environment.SHOW_SQL, "true");
-                props.put(Environment.HBM2DDL_AUTO, "");
+                props.put(Environment.FORMAT_SQL, "true");
+                props.put(Environment.HBM2DDL_AUTO, "update");
                 props.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
 
                 configuration.setProperties(props);
