@@ -1,6 +1,6 @@
 package jm.task.core.jdbc.dao;
 
-import exception.DaoException;
+import jm.task.core.jdbc.exception.DaoException;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 

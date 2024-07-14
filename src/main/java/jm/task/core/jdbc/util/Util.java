@@ -16,7 +16,7 @@ public class Util {
     private static final String USERNAME = "root";
     private static final String PASSWORD = "root";
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static SessionFactory sessionFactory = null;
+    private static SessionFactory sessionFactory;
 
     public static Connection getConnection() {
         Connection conn = null;
@@ -41,7 +41,7 @@ public class Util {
                 props.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
                 props.put(Environment.SHOW_SQL, "true");
                 props.put(Environment.HBM2DDL_AUTO, "");
-                props.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "tread");
+                props.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
 
                 configuration.setProperties(props);
                 configuration.addAnnotatedClass(User.class);
@@ -51,7 +51,7 @@ public class Util {
                 sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 
             } catch (Exception e) {
-                System.out.println("Исключение! " + e);
+                e.printStackTrace();
             }
         }
         return sessionFactory;
